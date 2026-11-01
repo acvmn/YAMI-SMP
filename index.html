@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>YAMI SMP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* ===== ЦВЕТА — меняй здесь ===== */
+        :root {
+            --bg: #050506;
+            --bg-2: #050506;
+            --card: #141417;
+            --text: #ededef;
+            --muted: #8a8a94;
+            --accent: #85C4C9;
+            --accent-2: #3B738F;
+            --accent-text: #0a0a0b;
+            --border: #25252b;
+            --dot: #85C4C9;
+            --click: #3B738F;
+            --radius: 14px;
+            --font-head: 'Inter',system-ui,sans-serif;
+            --font-body: 'Inter',system-ui,sans-serif;
+            color-scheme: dark;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top,0px);
+            padding-bottom: env(safe-area-inset-bottom,0px);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 70px
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 16px/1.6 var(--font-body)
+        }
+
+            body::before {
+                content: "";
+                position: fixed;
+                inset: 0;
+                background: radial-gradient(700px circle at 75% 5%,color-mix(in srgb,var(--accent) 14%,transparent),transparent);
+                pointer-events: none;
+                z-index: -1
+            }
+
+        h1, h2, h3 {
+            font-family: var(--font-head);
+            line-height: 1.15;
+            margin: 0 0 16px;
+            letter-spacing: -.02em
+        }
+
+        h1 {
+            font-size: clamp(38px,6vw,68px);
+            font-weight: 700
+        }
+
+        h2 {
+            font-size: clamp(24px,3vw,32px);
+            font-weight: 600;
+            margin-bottom: 28px
+        }
+
+        h3 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--muted)
+        }
+
+        .card h3 {
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 17px
+        }
+
+        a {
+            color: var(--accent-2)
+        }
+
+        canvas#fx {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: color-mix(in srgb,var(--bg) 88%,transparent);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border);
+            padding-top: env(safe-area-inset-top,0px)
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            flex-wrap: wrap
+        }
+
+        .logo {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text);
+            margin-right: auto;
+            text-decoration: none
+        }
+
+        nav a.l {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: color .2s,background .2s
+        }
+
+            nav a.l:hover {
+                background: var(--card);
+                color: var(--text)
+            }
+
+        .btn {
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 12px 22px;
+            background: var(--accent);
+            color: var(--accent-text);
+            text-decoration: none;
+            border: 1px solid transparent;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform .15s,opacity .15s
+        }
+
+            .btn:hover {
+                opacity: .9;
+                transform: translateY(-1px)
+            }
+
+            .btn:active {
+                transform: scale(.97)
+            }
+
+            .btn.alt {
+                background: transparent;
+                color: var(--text);
+                border-color: var(--border)
+            }
+
+                .btn.alt:hover {
+                    border-color: var(--muted)
+                }
+
+        section, .wrap {
+            max-width: 1100px;
+            margin: auto;
+            padding: 70px 20px
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            min-height: 80vh
+        }
+
+        .typed {
+            color: var(--muted);
+            min-height: 1.8em;
+            font-size: clamp(18px,2.4vw,22px);
+            margin-bottom: 8px
+        }
+
+            .typed::after {
+                content: "▌";
+                animation: bl 1s steps(2) infinite
+            }
+
+        @keyframes bl {
+            50% {
+                opacity: 0
+            }
+        }
+
+        .ip {
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+            margin: 18px 0;
+            padding: 10px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: border-color .2s
+        }
+
+            .ip:hover {
+                border-color: var(--accent)
+            }
+
+        .hero img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            border-radius: calc(var(--radius) + 6px)
+        }
+
+        .btns {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 10px
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+            gap: 18px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            transition: transform .2s,border-color .2s
+        }
+
+            .card:hover {
+                transform: translateY(-3px);
+                border-color: var(--accent)
+            }
+
+            .card p {
+                color: var(--muted);
+                margin: 0
+            }
+
+        .shot {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg,var(--card),var(--bg-2));
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: grid;
+            place-items: center;
+            color: var(--muted);
+            font-size: 13px;
+            overflow: hidden
+        }
+
+            .shot img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover
+            }
+
+        .alt-bg {
+            background: var(--bg-2)
+        }
+
+        ol.rules {
+            padding-left: 22px
+        }
+
+            ol.rules li {
+                margin: 8px 0
+            }
+
+        .price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 8px 0 14px;
+            letter-spacing: -.02em
+        }
+
+        .card ul {
+            padding-left: 18px;
+            color: var(--muted);
+            margin: 0 0 16px
+        }
+
+        .tag {
+            font-size: 11px;
+            color: var(--accent-2);
+            font-family: var(--font-head)
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 30px 20px calc(30px + env(safe-area-inset-bottom,0px));
+            border-top: 1px solid var(--border);
+            font-size: 14px
+        }
+
+        #donate {
+            display: none
+        }
+
+        body.d #donate {
+            display: block
+        }
+
+        body.d #home {
+            display: none
+        }
+
+        @media(max-width:800px) {
+            .hero {
+                grid-template-columns: 1fr;
+                min-height: 0
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fx"></canvas>
+
+    <header>
+        <nav>
+            <a class="logo" href="#">YAMI SMP</a>
+            <a class="l" href="#shots">Скриншоты</a>
+            <a class="l" href="#about">О нас</a>
+            <a class="l" href="#project">О проекте</a>
+            <a class="l" href="#donate" style="color:var(--accent)">Донат</a>
+        </nav>
+    </header>
+
+    <!-- ============ ГЛАВНАЯ ============ -->
+    <main id="home">
+        <div class="wrap hero">
+            <div>
+                <h1>YAMI SMP</h1>
+                <div class="typed" id="typed"></div>
+                <div class="btns">
+                    <a class="btn" href="https://t.me/pipiska_47">Присоединиться</a>
+                    <a class="btn alt" href="#donate">Донат</a>
+                </div>
+            </div>
+            <!-- Картинка справа: замени src на свою (например "hero.png" или ссылку) -->
+            <img id="heroImg" alt="Картинка сервера">
+        </div>
+
+        <section id="shots">
+            <h2>Скриншоты</h2>
+            <!-- Чтобы вставить скриншот: замени <span>…</span> на <img src="ссылка"> -->
+            <div class="grid">
+                <div class="shot"><img src="2.png"></div>
+                <div class="shot"><img src="3.png"></div>
+                <div class="shot"><img src="4.png"></div>
+                <div class="shot"><img src="5.png"></div>
+                <div class="shot"><img src="1.png"></div>
+            </div>
+        </section>
+
+        <div>
+            <section id="about">
+                <h2>О нас</h2>
+                <p>Команда талантливых интузиастов</p>
+                <div class="grid">
+                    <div class="card"><h3>Владелец</h3><p>zak</p></div>
+                    <div class="card"><h3>Тех. админы</h3><p>vapro_281</p></div>
+                    <div class="card"><h3>Связь</h3>Telegram: <a href="https://t.me/pipiska_47">@pipiska_47</a></p></div>
+                </div>
+            </section>
+        </div>
+
+        <section id="project">
+            <h2>О проекте</h2>
+            <p>Стремимся создать особое SMP с лором. Стараемся сами писать плагины для сервера, ради вашей комфортной и интересной игры.</p>
+            <div class="grid">
+                <div class="card"><h3>Версия</h3><p>Java Edition 26.3</p></div>
+                <div class="card"><h3>Режим</h3><p>Выживание, SMP, без приватов</p></div>
+                <div class="card"><h3>Особенности</h3><p>Плагины, ивенты…</p></div>
+                <div class="card"><h3>Вайтлист</h3><p>Да</p></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============ ДОНАТ ============ -->
+    <main id="donate">
+        <div class="wrap">
+            <h2>Донат</h2>
+            <p style="color:var(--muted)">Поддержка проекта и красивые бонусы. Донат не даёт игрового преимущества, ломающего баланс.</p>
+
+            <h3 style="margin-top:36px">УСЛУГИ</h3>
+            <div class="grid" id="privs"></div>
+
+            <p style="margin-top:36px;color:var(--muted)">После оплаты в комментарии укажи свой ник — выдача в течение 15 минут.</p>
+            <a class="btn" id="pay" href="#" target="_blank" rel="noopener">Оплатить через ЮMoney</a>
+            <a class="btn alt" href="#" style="margin-left:10px">← На главную</a>
+        </div>
+    </main>
+
+    <footer>© <span id="yr"></span> YAMI SMP · Не является продуктом Mojang / Microsoft</footer>
+
+    <script>
+        /* ===== НАСТРОЙКИ — меняй здесь ===== */
+        const CFG = {
+            // Ссылка на оплату ЮMoney: сюда вставь свою ссылку (форма / кошелёк)
+            yoomoney: 'https://yoomoney.ru/to/4100119142451269',
+            phrases: ['Добро пожаловать!', 'Строй. Исследуй. Выживай.', 'Дружное комьюнити.', 'Заходи к нам играть!'],
+            privs: [
+                { n: 'ТОПОР КРАТОСА', p: '119 ₽', f: ['Топор, моментально ломающий дерево'] },
+                { n: 'КИРКА БОГА', p: '79 ₽', f: ['Быстро ломает породы'] },
+                { n: 'КЛИНОК ДЬЯВОЛА', p: '79 ₽', f: ['Сильный меч для убийства ваших противников'] },
+                { n: 'БЕСКОНЕЧНЫЙ ФЕЙЕРВЕРК', p: '89 ₽', f: ['Хорошее дополнение к элитрам'] },
+                { n: 'НЕРУШИМЫЕ ЭЛИТРЫ', p: '179 ₽', f: ['Позволяет летать без остановки'] },
+                { n: 'КИРКА 3х3', p: '249 ₽', f: ['Кирка, ломающая область 3 на 3 на 3 блоков'] },
+                { n: 'КАСТОМНЫЙ ПРЕФИКС/СУФИКС', p: '69 ₽', f: ['Дает возможность кастомизации ника'] },
+                { n: 'РАЗБАН', p: '499 ₽', f: ['Дает вторую попытку'] }
+            ],
+        };
+
+        document.getElementById('heroImg').src = '6.png';
+
+        /* Печатающийся текст */
+        (() => {
+            const el = document.getElementById('typed'); let i = 0, j = 0, del = false;
+            (function t() {
+                const s = CFG.phrases[i];
+                el.textContent = s.slice(0, j);
+                if (!del && j === s.length) { del = true; return setTimeout(t, 1600) }
+                if (del && j === 0) { del = false; i = (i + 1) % CFG.phrases.length }
+                j += del ? -1 : 1; setTimeout(t, del ? 35 : 75);
+            })();
+        })();
+
+        /* Карточки доната */
+        const card = o => `<div class="card"><h3>${o.n}</h3><div class="price">${o.p}</div><ul>${o.f.map(x => `<li>${x}</li>`).join('')}</ul></div>`;
+        document.getElementById('privs').innerHTML = CFG.privs.map(card).join('');
+        document.getElementById('pay').href = CFG.yoomoney;
+
+        /* Роутинг: #donate — страница доната, остальное — главная */
+        function route() {
+            const h = location.hash.slice(1);
+            document.body.classList.toggle('d', h === 'donate');
+            if (h && h !== 'donate') { const e = document.getElementById(h); e && setTimeout(() => e.scrollIntoView(), 0) }
+            else window.scrollTo(0, 0);
+        }
+        addEventListener('hashchange', route); route();
+
+        /* Точки за курсором + эффект клика */
+        const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+        let W, H; const rs = () => { W = cv.width = innerWidth; H = cv.height = innerHeight }; addEventListener('resize', rs); rs();
+        const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+        const m = { x: W / 2, y: H / 2 }, dots = Array.from({ length: 14 }, () => ({ x: m.x, y: m.y })), parts = [];
+        addEventListener('pointermove', e => { m.x = e.clientX; m.y = e.clientY });
+        addEventListener('pointerdown', e => {
+            for (let i = 0; i < 18; i++) {
+                const a = Math.random() * 6.28, s = 1.5 + Math.random() * 3.5;
+                parts.push({ x: e.clientX, y: e.clientY, vx: Math.cos(a) * s, vy: Math.sin(a) * s, l: 1, sz: 3 + Math.random() * 4 })
+            }
+            parts.push({ x: e.clientX, y: e.clientY, ring: 1 });
+        });
+        (function loop() {
+            cx.clearRect(0, 0, W, H);
+            const c = css('--click');
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const p = parts[i];
+                if (p.ring) {
+                    p.ring += 4; cx.globalAlpha = Math.max(0, 1 - p.ring / 70); cx.strokeStyle = c; cx.lineWidth = 1.5;
+                    cx.beginPath(); cx.arc(p.x, p.y, p.ring / 2, 0, 6.28); cx.stroke(); if (p.ring > 70) parts.splice(i, 1); continue
+                }
+                p.x += p.vx; p.y += p.vy; p.vy += .12; p.l -= .025;
+                cx.globalAlpha = Math.max(0, p.l); cx.fillStyle = c; cx.beginPath(); cx.arc(p.x, p.y, p.sz / 2, 0, 6.28); cx.fill();
+                if (p.l <= 0) parts.splice(i, 1)
+            }
+            cx.globalAlpha = 1; requestAnimationFrame(loop);
+        })();
+    </script>
+</body>
+</html>
